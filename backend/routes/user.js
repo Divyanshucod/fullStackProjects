@@ -1,5 +1,5 @@
 const express = require('express')
-const { userSchemaSignIn,userSchemaSignUp } = require('../zodSchemas');
+const { userSchemaSignIn,userSchemaSignUp, updateBodySchema } = require('../zodSchemas');
 const { User } = require('../UserModel');
 const jwt  = require('jsonwebtoken')
 const {JWT_SECRET} = require('../config');
@@ -66,9 +66,16 @@ UserRouter.post('/signin', async (req,res)=>{
     })
 })
 
-UserRouter.post('/updateInfo',authMiddleWare,async (req,res)=>{
+UserRouter.put('/updateInfo',authMiddleWare,async (req,res)=>{
     const body = req.body;
     const userId = req.userId;
+        const {success}= updateBodySchema.safeParse(body);
+        if(!success){
+            return res.status(411).json({
+                message:"Error while updating information..."
+            })
+        }
+        body.password = await bcrypt.hash(body.password, 10);
     try {
         const updatedUserInfo = await User.findByIdAndUpdate(userId, body, {new:true});
         return res.status(200).status({
@@ -81,5 +88,14 @@ UserRouter.post('/updateInfo',authMiddleWare,async (req,res)=>{
     }
     
 })
+UserRouter.get('/bulk',authMiddleWare ,async (req,res)=>{
+   const filter = req.query.filter;
+   const users = await User.find({
+    $or:[{lastname: {$regex: filter}},{firstname: {$regex: filter}}],
+   }).select('lastname','email','firstname','_id')
 
+   res.status(200).json({
+    users
+   })
+})
 module.export = UserRouter
