@@ -89,7 +89,7 @@ UserRouter.put('/updateInfo',authMiddleWare,async (req,res)=>{
     
 })
 UserRouter.get('/bulk',authMiddleWare ,async (req,res)=>{
-   const filter = req.query.filter;
+   const filter = req.query.filter || "";
    const users = await User.find({
     $or:[{lastname: {$regex: filter}},{firstname: {$regex: filter}}],
    }).select('lastname','email','firstname','_id')
