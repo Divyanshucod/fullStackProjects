@@ -4,6 +4,7 @@ const { User } = require('../UserModel');
 const jwt  = require('jsonwebtoken')
 const {JWT_SECRET} = require('../config');
 const { authMiddleWare } = require('../middleware');
+const { Account } = require('../AccountModel');
 const UserRouter = express.Router()
 
 
@@ -24,13 +25,21 @@ UserRouter.post('/signup',async (req,res)=>{
     }
     // hash the password 
     const hashedPassword = await bcrypt.hash(password, 10);
-    await User.create({
+    const balance = randomBalanceGenerator()
+    const user = await User.create({
         email,
         password:hashedPassword,
         lastname,
-        firstname
+        firstname,
+        balance:balance
     })
-
+    const id = user._id;
+    // adding balance to the Account table
+    await Account.create({
+        userId:id,
+        balance:balance
+    })
+    
     res.status(200).json({
         message:'user created successfully!'
     })
@@ -99,3 +108,7 @@ UserRouter.get('/bulk',authMiddleWare ,async (req,res)=>{
    })
 })
 module.export = UserRouter
+
+function randomBalanceGenerator(){
+    return Math.floor(Math.random()*10000+1)
+}

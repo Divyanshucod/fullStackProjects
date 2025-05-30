@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
 const accountSchema = new mongoose.Schema({
-      userId: { type: Schema.Types.ObjectId, ref: 'users' },
-      balance: Number
+      userId: { type: mongoose.Schema.Types.ObjectId, ref: 'users', required:true },
+      balance: {type:Number,required:true}
 })
 const Account = mongoose.model('accounts',accountSchema);
 module.exports = {
