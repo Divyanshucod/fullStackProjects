@@ -6,7 +6,7 @@ const authMiddleWare = (req,res,next)=>{
     //authenticate the user
     const authHeader = req.headers.authorization;
     if(!authHeader || !authHeader.startsWith('Bearer ')){
-        return res.status(403).json({})
+        return res.status(403).json({message:"Not verified!"})
     }
     const token = authHeader.split(' ')[1];
     

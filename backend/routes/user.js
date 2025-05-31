@@ -85,7 +85,7 @@ UserRouter.post("/signin", async (req, res) => {
   // creating a jsonwebtoken
   const token = jwt.sign({ id: userExist._id }, JWT_SECRET);
   res.status(200).json({
-    token: `Bearer ${token}`,
+    token: token,
   });
 });
 
@@ -125,7 +125,7 @@ UserRouter.get("/bulk", authMiddleWare, async (req, res) => {
       $or: [
         { lastname: { $regex: filter } },
         { firstname: { $regex: filter } },
-      ],
+      ]
     },
     { firstname: 1, lastname: 1, _id: 1 }
   );
