@@ -1,4 +1,4 @@
 const mongoose = require('mongoose');
-console.log(process.env.MONGO_USER);
+require('dotenv').config()
 
-mongoose.connect(`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@recipes.wubssts.mongodb.net/${MONGO_DATABASE}`)
+mongoose.connect(`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@recipes.wubssts.mongodb.net/${process.env.MONGO_DATABASE}`)

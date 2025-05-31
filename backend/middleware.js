@@ -1,4 +1,4 @@
-import { JWT_SECRET } from './config';
+const {JWT_SECRET} = require('./config')
 
 const jwt = require('jsonwebtoken')
 
@@ -9,8 +9,9 @@ const authMiddleWare = (req,res,next)=>{
         return res.status(403).json({})
     }
     const token = authHeader.split(' ')[1];
+    
     try {
-         const decoded = jwt.verify(token[0],JWT_SECRET);
+         const decoded = jwt.verify(token,JWT_SECRET);
          req.userId = decoded.id;
          next();
     } catch (error) {

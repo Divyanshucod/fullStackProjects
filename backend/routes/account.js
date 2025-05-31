@@ -14,7 +14,8 @@ AccountRouter.get('/balance',authMiddleWare,async (req,res)=>{
 })
 AccountRouter.post('/transfer',async (req,res)=>{
     // good solution for transaction
-    const session = await mongoose.startSession();
+    try {
+        const session = await mongoose.startSession();
     session.startTransaction();
     const {to,amount} = req.body;
     const SenderAccount = await Account.findOne({userId:req.userId}).session(session);
@@ -43,6 +44,11 @@ AccountRouter.post('/transfer',async (req,res)=>{
     res.status(200).json({
         message:'Transfer Successfull!'
     })
+    } catch (error) {
+        res.status(500).json({
+            message:"Transaction Failed!"
+        })
+    }
 
 })
 module.exports = {
