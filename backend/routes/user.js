@@ -85,7 +85,7 @@ UserRouter.post("/signin", async (req, res) => {
   // creating a jsonwebtoken
   const token = jwt.sign({ id: userExist._id }, JWT_SECRET);
   res.status(200).json({
-    userId: `Bearer ${token}`,
+    token: `Bearer ${token}`,
   });
 });
 
