@@ -10,6 +10,7 @@ const { JWT_SECRET } = require("../config");
 const { authMiddleWare } = require("../middleware");
 const bcrypt = require("bcrypt");
 const { Account } = require("../AccountModel");
+const { default: mongoose } = require("mongoose");
 const UserRouter = express.Router();
 
 UserRouter.post("/signup", async (req, res) => {
@@ -119,13 +120,19 @@ UserRouter.put("/updateInfo", authMiddleWare, async (req, res) => {
   }
 });
 UserRouter.get("/bulk", authMiddleWare, async (req, res) => {
-  const filter = req.params.filter || "";
+  const filter = req.query.filter || "";
+  
   const users = await User.find(
     {
-      $or: [
-        { lastname: { $regex: filter } },
-        { firstname: { $regex: filter } },
-      ]
+      $and: [
+      {
+        $or: [
+          { lastname: { $regex: filter, $options: 'i' } },
+          { firstname: { $regex: filter, $options: 'i' } }
+        ]
+      },
+      { _id: { $ne: req.userId } }
+    ]
     },
     { firstname: 1, lastname: 1, _id: 1 }
   );
